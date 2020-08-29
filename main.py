@@ -6,6 +6,9 @@ from tweepy import API
 from tweepy import OAuthHandler
 import twitter_api_info
 from textblob import TextBlob
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+
 
 #setting chart limits
 pd.set_option('display.max_rows', None)
@@ -23,15 +26,15 @@ def clean_tweet(tweet):
 def tweet_sentiment(tweet):
     return TextBlob(clean_tweet(tweet)).sentiment.polarity
 
-def collect_tweets():
+def collect_tweets(search_phrase):
     all_tweets = []
-    first_run = api.search(q = "donald trump", lang = "en", result_type = 'recent', count = 100)
+    first_run = api.search(q = search_phrase, lang = "en", result_type = 'recent', count = 100)
     all_tweets += first_run
     last_tweet_date = first_run[len(first_run) - 1].created_at
     parsed_date = last_tweet_date.strftime("%Y-%m-%d")
 
     for x in range(9):
-        all_tweets += api.search(q = "donald trump", lang = "en", result_type = 'recent', until = parsed_date, count = 100)
+        all_tweets += api.search(q = search_phrase, lang = "en", result_type = 'recent', until = parsed_date, count = 100)
 
     return all_tweets
 
@@ -45,11 +48,27 @@ def create_dataframe(tweets):
 
     return df
 
+def remove_unwanted_words(tweet, remove_words):
+    for word in remove_words:
+        tweet = tweet.replace(word, "")
+    return tweet
+
+def make_wordcloud(df, remove_words):
+    all_text = ""
+    for tweet in df["Text"]:
+        tweet = remove_unwanted_words(tweet, remove_words)
+        all_text += tweet
+    wordcloud = WordCloud().generate(all_text)
+    plt.imshow(wordcloud, interpolation="bilinear")
+    plt.axis("off")
+    plt.show()
+
 if __name__ == '__main__':
     auth = authenticate_app()
     api = API(auth)
-    all_tweets = collect_tweets()
-
+    search_phrase = input("Search keyword: ")
+    all_tweets = collect_tweets(search_phrase)
     df = create_dataframe(all_tweets)
-
+    remove_words = ["https", "co", "com", search_phrase]
+    make_wordcloud(df, remove_words)
     print(df)
