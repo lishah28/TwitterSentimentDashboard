@@ -1,26 +1,16 @@
 # Importing all necessary libraries for project
 import re
-
-
 import pandas as pd
-#setting chart limits
+import numpy as np
+from tweepy import API
+from tweepy import OAuthHandler
+import twitter_api_info
+from textblob import TextBlob
 
+#setting chart limits
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', 10)
 pd.set_option('display.width', None)
-
-import numpy as np
-
-from tweepy import API
-from tweepy import OAuthHandler
-
-import twitter_api_info
-
-from textblob import TextBlob
-
-#_____________________________________________________________________________
-
-
 
 def authenticate_app():
     auth = OAuthHandler(twitter_api_info.C_KEY, twitter_api_info.C_SECRET)
@@ -63,6 +53,3 @@ if __name__ == '__main__':
     df = create_dataframe(all_tweets)
 
     print(df)
-
-
-
