@@ -3,7 +3,7 @@
 {% block head%}
 
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
 
 
 {% endblock %}
@@ -15,13 +15,15 @@
     <div class="search-bar">
     <input type="text" name="" class="search-txt" placeholder="Please enter keyword..."/>
     <a class="search-btn">
-    <i class="far fa-search"></i>
+    <i class="fas fa-search"></i>
     </a>
     </div>
-
-    {% for tweet in content %}
+    <div class="tweets">
+        {% for tweet in content %}
             <p>{{tweet}}</p>
         {% endfor %}
+    </div>
+
 
 {% endblock %}
 
