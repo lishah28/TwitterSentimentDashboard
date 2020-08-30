@@ -8,7 +8,7 @@ import twitter_api_info
 from textblob import TextBlob
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
-
+import plotly.graph_objects as go
 
 #setting chart limits
 pd.set_option('display.max_rows', None)
@@ -26,14 +26,14 @@ def clean_tweet(tweet):
 def tweet_sentiment(tweet):
     return TextBlob(clean_tweet(tweet)).sentiment.polarity
 
-def collect_tweets(search_phrase):
+def collect_tweets(search_phrase, api):
     all_tweets = []
     first_run = api.search(q = search_phrase, lang = "en", result_type = 'recent', count = 100)
     all_tweets += first_run
     last_tweet_date = first_run[len(first_run) - 1].created_at
     parsed_date = last_tweet_date.strftime("%Y-%m-%d")
 
-    for x in range(9):
+    for x in range(3):
         all_tweets += api.search(q = search_phrase, lang = "en", result_type = 'recent', until = parsed_date, count = 100)
 
     return all_tweets
@@ -67,7 +67,7 @@ if __name__ == '__main__':
     auth = authenticate_app()
     api = API(auth)
     search_phrase = input("Search keyword: ")
-    all_tweets = collect_tweets(search_phrase)
+    all_tweets = collect_tweets(search_phrase, api)
     df = create_dataframe(all_tweets)
     remove_words = ["https", "co", "com", search_phrase]
     make_wordcloud(df, remove_words)
